@@ -4,7 +4,7 @@ This repository contains the file myFile, which is located in the output folder.
 
 1 2, 33 44, 51, 6,7, 8 9 5 105
 
-1 2 3 4 9 8 7 6
+1 2 3 4 9 8 7 6 
 
 1, 2, 3, 4, 5, 6, 7, 8, ,10 15 14
 
