@@ -9,6 +9,7 @@
 class ArrayTransformer {
 protected:
     std::ifstream fin;
+
 public:
     ArrayTransformer(std::string pathToFile) {
         fin.exceptions(std::ifstream::badbit | std::ifstream::failbit);
@@ -20,16 +21,26 @@ public:
         fin.close();
     }
 
+public:
     virtual std::vector<int> nextTransform() = 0;
+    
+    void displayArr(std::vector<int>& arr);
+    void bubbleSort(std::vector<int>& arr);
+    void revBubbleSort(std::vector<int>& arr);
+    std::vector<int> findIntersection(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3  = {});
+    std::vector<int> createSortedReverseUnique(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3);
+
+    bool contains(const std::vector<int>& arr, int num);
+    
 };
 
 
-class VectorTransformer: public ArrayTransformer {
+class ReadData: public ArrayTransformer {
 public: 
-    VectorTransformer(std::string pathToFile) : ArrayTransformer(pathToFile) {}
+    ReadData(std::string pathToFile) : ArrayTransformer(pathToFile) {}
 
-    std::vector<int> nextTransform() override 
-    {
+    std::vector<int> nextTransform() override {
+
         try {
             std::vector<int> arr;
 
@@ -70,14 +81,54 @@ public:
 
 
 
-void displayArr(std::vector<int>& arr) {
+int main() {
+    std::string path = "./myFile";
+
+    ReadData manipulateArr(path);
+
+    std::vector<int> arr1 = manipulateArr.nextTransform();
+    std::vector<int> arr2 = manipulateArr.nextTransform();
+    std::vector<int> arr3 = manipulateArr.nextTransform();
+    
+    std::cout << std::endl;
+
+    manipulateArr.bubbleSort(arr1);
+    manipulateArr.displayArr(arr1);
+    manipulateArr.bubbleSort(arr2);
+    manipulateArr.displayArr(arr2);
+    manipulateArr.displayArr(arr3);
+    
+    std::cout << std::endl;
+
+    std::vector<int> intersection  = manipulateArr.findIntersection(arr1, arr2, arr3);
+    std::vector<int> intersection2 = manipulateArr.findIntersection(arr1, arr3);
+
+    manipulateArr.displayArr(intersection);
+    manipulateArr.displayArr(intersection2);
+
+    std::cout << std::endl;
+
+    std::vector<int> reverseUnique = manipulateArr.createSortedReverseUnique(arr1, arr2, arr3);
+
+    manipulateArr.displayArr(reverseUnique);
+    
+    return 0;
+}
+
+
+
+
+
+
+void ArrayTransformer::displayArr(std::vector<int>& arr) {
     for (int i : arr) {
         std::cout << i << ' ';
     }
     std::cout << std::endl;
 }
 
-void bubbleSort(std::vector<int>& arr) { 
+
+void ArrayTransformer::bubbleSort(std::vector<int>& arr) { 
     int temp;
     for (size_t i = 0; i < arr.size() - 1; i++) {
         for (size_t j = 0; j < arr.size() - i - 1; j++) {
@@ -91,7 +142,8 @@ void bubbleSort(std::vector<int>& arr) {
     }
 }
 
-void revBubbleSort(std::vector<int>& arr) { 
+
+void ArrayTransformer::revBubbleSort(std::vector<int>& arr) { 
     int temp;
     for (size_t i = 0; i < arr.size() - 1; i++) {
         for (size_t j = 0; j < arr.size() - i - 1; j++) {
@@ -104,7 +156,8 @@ void revBubbleSort(std::vector<int>& arr) {
     }
 }
 
-bool contains(const std::vector<int>& arr, int num) {
+
+bool ArrayTransformer::contains(const std::vector<int>& arr, int num) {
     for (size_t i = 0; i < arr.size(); ++i) {
         if (arr[i] == num) {
             return true;
@@ -113,7 +166,8 @@ bool contains(const std::vector<int>& arr, int num) {
     return false;
 }
 
-std::vector<int> findIntersection(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3 = {}) {
+
+std::vector<int> ArrayTransformer::findIntersection(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3) {
     std::vector<int> intersection;
 
     for (int num : arr1) {
@@ -127,7 +181,8 @@ std::vector<int> findIntersection(const std::vector<int>& arr1, const std::vecto
     return intersection;
 }
 
-std::vector<int> createSortedReverseUnique(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3) {
+
+std::vector<int> ArrayTransformer::createSortedReverseUnique(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3) {
     std::vector<int> reverseUnique;
 
     for (int num : arr1) {
@@ -149,38 +204,4 @@ std::vector<int> createSortedReverseUnique(const std::vector<int>& arr1, const s
     revBubbleSort(reverseUnique);
 
     return reverseUnique;
-}
-
-
-int main() {
-    std::string path = "./myFile";
-
-    VectorTransformer vTrans(path);
-    std::vector<int> arr1 = vTrans.nextTransform();
-    std::vector<int> arr2 = vTrans.nextTransform();
-    std::vector<int> arr3 = vTrans.nextTransform();
-
-    std::cout << std::endl;
-
-    bubbleSort(arr1);
-    displayArr(arr1);
-    bubbleSort(arr2);
-    displayArr(arr2);
-    displayArr(arr3);
-    
-    std::cout << std::endl;
-
-    std::vector<int> intersection  = findIntersection(arr1, arr2, arr3);
-    std::vector<int> intersection2 = findIntersection(arr1, arr3);
-
-    displayArr(intersection);
-    displayArr(intersection2);
-
-    std::cout << std::endl;
-
-    std::vector<int> reverseUnique = createSortedReverseUnique(arr1, arr2, arr3);
-
-    displayArr(reverseUnique);
-    
-    return 0;
 }
