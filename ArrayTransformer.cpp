@@ -1,9 +1,7 @@
-#include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
-#include <list>
 #include <algorithm>
+#include <iostream>
 
 template <typename Iterable>
 
@@ -83,43 +81,6 @@ public:
     }
     }
 };
-
-
-
-int main() {
-    std::string path = "./myFile";
-
-    ReadData<std::vector<int>> manipulateArr(path);
-
-    std::vector<int> arr1 = manipulateArr.nextTransform();
-    std::vector<int> arr2 = manipulateArr.nextTransform();
-    std::vector<int> arr3 = manipulateArr.nextTransform();
-
-    std::cout << std::endl;
-
-    manipulateArr.bubbleSort(arr1);
-    manipulateArr.displayArr(arr1);
-    manipulateArr.bubbleSort(arr2);
-    manipulateArr.displayArr(arr2);
-    manipulateArr.displayArr(arr3);
-    
-    std::cout << std::endl;
-    
-    std::vector<int> intersection  = manipulateArr.findIntersection(arr1, arr2, arr3);
-    std::vector<int> intersection2 = manipulateArr.findIntersection(arr1, arr3);
-
-    manipulateArr.displayArr(intersection);
-    manipulateArr.displayArr(intersection2);
-
-    std::cout << std::endl;
-
-    std::vector<int> reverseUnique = manipulateArr.createSortedReverseUnique(arr1, arr2, arr3);
-
-    manipulateArr.displayArr(reverseUnique);
-    
-        return 0;
-    }
-
 
 template <typename Iterable>
 template <typename T>
