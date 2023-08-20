@@ -2,9 +2,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <list>
 #include <algorithm>
 
-
+template <typename Iterable>
 
 class ArrayTransformer {
 protected:
@@ -13,7 +14,6 @@ protected:
 public:
     ArrayTransformer(std::string pathToFile) {
         fin.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-        std::cout << "start of ArrayTransf\n";
         fin.open(pathToFile);
     }
 
@@ -22,35 +22,40 @@ public:
     }
 
 public:
-    virtual std::vector<int> nextTransform() = 0;
-    
-    void displayArr(std::vector<int>& arr);
-    void bubbleSort(std::vector<int>& arr);
-    void revBubbleSort(std::vector<int>& arr);
-    std::vector<int> findIntersection(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3  = {});
-    std::vector<int> createSortedReverseUnique(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3);
+    virtual Iterable nextTransform() = 0;
 
-    bool contains(const std::vector<int>& arr, int num);
-    
+    template <typename T>
+    void displayArr(const T& arr);
+    template <typename T>
+    void bubbleSort(T& arr);
+    template <typename T>
+    void revBubbleSort(T& arr);
+    template <typename T>
+    T findIntersection(const T& arr1, const T& arr2, const T& arr3 = {});
+    template <typename T>
+    T createSortedReverseUnique(const T& arr1, const T& arr2, const T& arr3); 
+    template <typename T>
+    bool contains(const T& arr, int num);
 };
 
+template <typename Trd>
 
-class ReadData: public ArrayTransformer {
+class ReadData: public ArrayTransformer<Trd> {
 public: 
-    ReadData(std::string pathToFile) : ArrayTransformer(pathToFile) {}
-
-    std::vector<int> nextTransform() override {
+    ReadData(std::string pathToFile) : ArrayTransformer<Trd>(pathToFile) {}
+    
+    Trd nextTransform() {
 
         try {
-            std::vector<int> arr;
+            Trd arr;
 
-            if (fin.eof()) {
+            if (this->fin.eof()) {
                 return arr;
             }
 
             std::string line;
             std::string strNum;
-            std::getline(fin, line);    
+            std::getline(this->fin, line);    
             std::cout << "read line: " << line << '\n';
 
             for(size_t i = 0; i < line.size(); ++i) {
@@ -84,12 +89,12 @@ public:
 int main() {
     std::string path = "./myFile";
 
-    ReadData manipulateArr(path);
+    ReadData<std::vector<int>> manipulateArr(path);
 
     std::vector<int> arr1 = manipulateArr.nextTransform();
     std::vector<int> arr2 = manipulateArr.nextTransform();
     std::vector<int> arr3 = manipulateArr.nextTransform();
-    
+
     std::cout << std::endl;
 
     manipulateArr.bubbleSort(arr1);
@@ -99,7 +104,7 @@ int main() {
     manipulateArr.displayArr(arr3);
     
     std::cout << std::endl;
-
+    
     std::vector<int> intersection  = manipulateArr.findIntersection(arr1, arr2, arr3);
     std::vector<int> intersection2 = manipulateArr.findIntersection(arr1, arr3);
 
@@ -112,63 +117,60 @@ int main() {
 
     manipulateArr.displayArr(reverseUnique);
     
-    return 0;
-}
+        return 0;
+    }
 
 
-
-
-
-
-void ArrayTransformer::displayArr(std::vector<int>& arr) {
-    for (int i : arr) {
+template <typename Iterable>
+template <typename T>
+void ArrayTransformer<Iterable>::displayArr(const T& arr) {
+    for (const auto& i : arr) {
         std::cout << i << ' ';
     }
     std::cout << std::endl;
 }
 
 
-void ArrayTransformer::bubbleSort(std::vector<int>& arr) { 
-    int temp;
-    for (size_t i = 0; i < arr.size() - 1; i++) {
-        for (size_t j = 0; j < arr.size() - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                
-                temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+template <typename Iterable>
+template <typename T>
+void ArrayTransformer<Iterable>::bubbleSort(T& arr) {
+        for (auto it = std::begin(arr); it != std::end(arr); ++it) {
+            for (auto inner = it; inner != std::end(arr); ++inner) {
+                if (*it > *inner) {
+                    std::swap(*it, *inner);
+                }
+            }
+        }
+    }
+
+
+template <typename Iterable>
+template <typename T>
+void ArrayTransformer<Iterable>::revBubbleSort(T& arr) {
+    for (auto it = std::begin(arr); it != std::end(arr); ++it) {
+        for (auto inner = it; inner != std::end(arr); ++inner) {
+            if (*it < *inner) {
+                std::swap(*it, *inner);
             }
         }
     }
 }
 
-
-void ArrayTransformer::revBubbleSort(std::vector<int>& arr) { 
-    int temp;
-    for (size_t i = 0; i < arr.size() - 1; i++) {
-        for (size_t j = 0; j < arr.size() - i - 1; j++) {
-            if (arr[j] < arr[j + 1]) { 
-                temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-}
-
-
-bool ArrayTransformer::contains(const std::vector<int>& arr, int num) {
-    for (size_t i = 0; i < arr.size(); ++i) {
-        if (arr[i] == num) {
+template <typename Iterable>
+template <typename T>
+bool ArrayTransformer<Iterable>::contains(const T& arr, int num) {
+    for (const auto& element : arr) {
+        if (element == num) {
             return true;
         }
     }
     return false;
 }
 
-
-std::vector<int> ArrayTransformer::findIntersection(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3) {
-    std::vector<int> intersection;
+template <typename Iterable>
+template <typename T>
+T ArrayTransformer<Iterable>::findIntersection(const T& arr1, const T& arr2, const T& arr3) {
+    T intersection;
 
     for (int num : arr1) {
         if (contains(arr2, num)) {
@@ -177,31 +179,21 @@ std::vector<int> ArrayTransformer::findIntersection(const std::vector<int>& arr1
             }
         }
     }
-
     return intersection;
 }
 
+    template <typename Iterable>
+    template <typename T>
+    T ArrayTransformer<Iterable>::createSortedReverseUnique(const T& arr1, const T& arr2, const T& arr3) {
+        T reverseUnique;
 
-std::vector<int> ArrayTransformer::createSortedReverseUnique(const std::vector<int>& arr1, const std::vector<int>& arr2, const std::vector<int>& arr3) {
-    std::vector<int> reverseUnique;
-
-    for (int num : arr1) {
-        if (!contains(reverseUnique, num)) {
-            reverseUnique.push_back(num);
+        for (const auto& arr : {arr1, arr2, arr3}) {
+            for (const auto& num : arr) {
+                if (std::find(reverseUnique.begin(), reverseUnique.end(), num) == reverseUnique.end()) {
+                  reverseUnique.push_back(num);
+            }
         }
     }
-    for (int num : arr2) {
-        if (!contains(reverseUnique, num)) {
-            reverseUnique.push_back(num);
-        }
+        revBubbleSort(reverseUnique);
+        return reverseUnique;
     }
-    for (int num : arr3) {
-        if (!contains(reverseUnique, num)) {
-            reverseUnique.push_back(num);
-        }
-    }
-
-    revBubbleSort(reverseUnique);
-
-    return reverseUnique;
-}
