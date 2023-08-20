@@ -75,9 +75,13 @@ public:
 
             return arr;
     } 
+    catch (const std::ifstream::failure& ex) {
+        std::cout << ex.what() << '\n';
+        std::cout << "Unable to open file!\n";
+    }
     catch (const std::exception& ex) {
         std::cout << ex.what() << '\n';
-        std::cout << "Error\n";
+        std::cout << "Error!\n";
     }
     }
 };
