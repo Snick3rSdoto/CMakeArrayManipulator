@@ -3,8 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-template <typename Iterable>
-
+template <typename T>
 class ArrayTransformer {
 protected:
     std::ifstream fin;
@@ -20,32 +19,25 @@ public:
     }
 
 public:
-    virtual Iterable nextTransform() = 0;
+    virtual T nextTransform() = 0;
 
-    template <typename T>
     void displayArr(const T& arr);
-    template <typename T>
     void bubbleSort(T& arr);
-    template <typename T>
     void revBubbleSort(T& arr);
-    template <typename T>
     T findIntersection(const T& arr1, const T& arr2, const T& arr3 = {});
-    template <typename T>
     T createSortedReverseUnique(const T& arr1, const T& arr2, const T& arr3); 
-    template <typename T>
     bool contains(const T& arr, int num);
 };
 
-template <typename Trd>
-
-class ReadData: public ArrayTransformer<Trd> {
+template <typename T>
+class ReadData: public ArrayTransformer<T> {
 public: 
-    ReadData(std::string pathToFile) : ArrayTransformer<Trd>(pathToFile) {}
+    ReadData(std::string pathToFile) : ArrayTransformer<T>(pathToFile) {}
     
-    Trd nextTransform() {
+    T nextTransform() {
 
         try {
-            Trd arr;
+            T arr;
 
             if (this->fin.eof()) {
                 return arr;
@@ -86,9 +78,8 @@ public:
     }
 };
 
-template <typename Iterable>
 template <typename T>
-void ArrayTransformer<Iterable>::displayArr(const T& arr) {
+void ArrayTransformer<T>::displayArr(const T& arr) {
     for (const auto& i : arr) {
         std::cout << i << ' ';
     }
@@ -96,9 +87,8 @@ void ArrayTransformer<Iterable>::displayArr(const T& arr) {
 }
 
 
-template <typename Iterable>
 template <typename T>
-void ArrayTransformer<Iterable>::bubbleSort(T& arr) {
+void ArrayTransformer<T>::bubbleSort(T& arr) {
         for (auto it = std::begin(arr); it != std::end(arr); ++it) {
             for (auto inner = it; inner != std::end(arr); ++inner) {
                 if (*it > *inner) {
@@ -109,9 +99,8 @@ void ArrayTransformer<Iterable>::bubbleSort(T& arr) {
     }
 
 
-template <typename Iterable>
 template <typename T>
-void ArrayTransformer<Iterable>::revBubbleSort(T& arr) {
+void ArrayTransformer<T>::revBubbleSort(T& arr) {
     for (auto it = std::begin(arr); it != std::end(arr); ++it) {
         for (auto inner = it; inner != std::end(arr); ++inner) {
             if (*it < *inner) {
@@ -121,9 +110,8 @@ void ArrayTransformer<Iterable>::revBubbleSort(T& arr) {
     }
 }
 
-template <typename Iterable>
 template <typename T>
-bool ArrayTransformer<Iterable>::contains(const T& arr, int num) {
+bool ArrayTransformer<T>::contains(const T& arr, int num) {
     for (const auto& element : arr) {
         if (element == num) {
             return true;
@@ -132,9 +120,8 @@ bool ArrayTransformer<Iterable>::contains(const T& arr, int num) {
     return false;
 }
 
-template <typename Iterable>
 template <typename T>
-T ArrayTransformer<Iterable>::findIntersection(const T& arr1, const T& arr2, const T& arr3) {
+T ArrayTransformer<T>::findIntersection(const T& arr1, const T& arr2, const T& arr3) {
     T intersection;
 
     for (int num : arr1) {
@@ -147,9 +134,8 @@ T ArrayTransformer<Iterable>::findIntersection(const T& arr1, const T& arr2, con
     return intersection;
 }
 
-    template <typename Iterable>
     template <typename T>
-    T ArrayTransformer<Iterable>::createSortedReverseUnique(const T& arr1, const T& arr2, const T& arr3) {
+    T ArrayTransformer<T>::createSortedReverseUnique(const T& arr1, const T& arr2, const T& arr3) {
         T reverseUnique;
 
         for (const auto& arr : {arr1, arr2, arr3}) {
